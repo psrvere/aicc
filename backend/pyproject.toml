@@ -1,0 +1,25 @@
+[project]
+name = "aicc-backend"
+version = "0.1.0"
+description = "AICC Cold Calling CRM Backend"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]",
+    "uvicorn",
+    "pydantic-settings",
+    "gspread",
+    "groq",
+    "supabase",
+    "google-auth",
+    "python-multipart",
+    "httpx",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "httpx",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
