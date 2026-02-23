@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import contacts
+from app.routers import call_plan, calls, contacts
 
 app = FastAPI(title="AICC Backend", version="0.1.0")
 
@@ -14,6 +14,8 @@ app.add_middleware(
 )
 
 app.include_router(contacts.router)
+app.include_router(call_plan.router)
+app.include_router(calls.router)
 
 
 @app.get("/health")
