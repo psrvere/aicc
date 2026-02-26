@@ -1,0 +1,22 @@
+package com.aicc.coldcall.data.api
+
+import com.aicc.coldcall.core.database.CallLogDao
+import com.aicc.coldcall.core.database.toEntity
+import com.aicc.coldcall.core.model.CallLog
+import com.aicc.coldcall.core.network.AiccApiService
+import com.aicc.coldcall.core.network.dto.CallLogCreateDto
+import com.aicc.coldcall.core.network.dto.toDomain
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@Singleton
+class CallLogRepository @Inject constructor(
+    private val api: AiccApiService,
+    private val callLogDao: CallLogDao,
+) {
+    suspend fun logCall(dto: CallLogCreateDto): CallLog {
+        val callLog = api.logCall(dto).toDomain()
+        callLogDao.insert(callLog.toEntity())
+        return callLog
+    }
+}
