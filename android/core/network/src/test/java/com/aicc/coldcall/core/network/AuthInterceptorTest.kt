@@ -41,7 +41,7 @@ class AuthInterceptorTest {
 
         client.newCall(
             Request.Builder().url(mockWebServer.url("/api/contacts")).build()
-        ).execute()
+        ).execute().use { /* consume and close response */ }
 
         val recorded = mockWebServer.takeRequest()
         assertEquals("Bearer test-token-123", recorded.getHeader("Authorization"))
@@ -60,7 +60,7 @@ class AuthInterceptorTest {
 
         client.newCall(
             Request.Builder().url(mockWebServer.url("/api/contacts")).build()
-        ).execute()
+        ).execute().use { /* consume and close response */ }
 
         val recorded = mockWebServer.takeRequest()
         assertNull(recorded.getHeader("Authorization"))
