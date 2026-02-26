@@ -9,6 +9,10 @@ android {
     namespace = "com.aicc.coldcall.core.network"
     compileSdk = 35
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         minSdk = 26
     }
