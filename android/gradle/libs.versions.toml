@@ -13,7 +13,7 @@ workmanager = "2.10.0"
 media3 = "1.5.1"
 coroutines = "1.9.0"
 playServicesAuth = "21.3.0"
-credentialManager = "1.5.0-rc01"
+credentialManager = "1.5.0"
 mockk = "1.13.13"
 turbine = "1.2.0"
 hiltNavCompose = "1.2.0"
@@ -22,7 +22,8 @@ lifecycleRuntime = "2.8.7"
 activityCompose = "1.9.3"
 junit = "4.13.2"
 datastorePrefs = "1.1.1"
-securityCrypto = "1.1.0-alpha06"
+# NOTE: security-crypto is deprecated as of 1.1.0 — consider migrating to Android Keystore APIs directly
+securityCrypto = "1.1.0"
 
 [libraries]
 # Compose
@@ -59,6 +60,7 @@ retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = 
 retrofit-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+okhttp-mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "okhttp" }
 moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
 moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
 moshi-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
