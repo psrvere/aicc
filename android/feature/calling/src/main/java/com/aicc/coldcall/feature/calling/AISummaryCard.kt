@@ -95,20 +95,18 @@ fun AiPipelineProgress(
     status: AiPipelineStatus,
     modifier: Modifier = Modifier,
 ) {
+    val label = when (status) {
+        AiPipelineStatus.UPLOADING -> "Uploading recording..."
+        AiPipelineStatus.TRANSCRIBING -> "Transcribing..."
+        AiPipelineStatus.SUMMARIZING -> "Analyzing..."
+        else -> return
+    }
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
-        Text(
-            text = when (status) {
-                AiPipelineStatus.UPLOADING -> "Uploading recording..."
-                AiPipelineStatus.TRANSCRIBING -> "Transcribing..."
-                AiPipelineStatus.SUMMARIZING -> "Analyzing..."
-                else -> ""
-            },
-            style = MaterialTheme.typography.bodyMedium,
-        )
+        Text(text = label, style = MaterialTheme.typography.bodyMedium)
     }
 }
