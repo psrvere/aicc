@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -32,15 +33,20 @@ class ContactListViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ContactListUiState())
     val uiState: StateFlow<ContactListUiState> = _uiState.asStateFlow()
 
+    private var contactsJob: Job? = null
+
     init {
         loadContacts()
     }
 
     private fun loadContacts() {
-        viewModelScope.launch {
+        contactsJob?.cancel()
+        contactsJob = viewModelScope.launch {
             contactRepository.getContacts()
                 .catch { e ->
-                    _uiState.update { it.copy(isLoading = false, error = e.message) }
+                    _uiState.update {
+                        it.copy(isLoading = false, isRefreshing = false, error = e.message)
+                    }
                 }
                 .collect { contacts ->
                     _uiState.update { state ->
