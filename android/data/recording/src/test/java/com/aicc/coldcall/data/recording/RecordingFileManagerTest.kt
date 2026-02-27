@@ -48,6 +48,12 @@ class RecordingFileManagerTest {
         assertTrue(file.exists())
     }
 
+    @Test(expected = IllegalStateException::class)
+    fun `createRecordingFile throws when file already exists`() {
+        manager.createRecordingFile("c1", 100L)
+        manager.createRecordingFile("c1", 100L) // same contactId + timestamp
+    }
+
     @Test
     fun `deleteFilesOlderThan removes old files and keeps recent`() {
         val now = System.currentTimeMillis()

@@ -9,8 +9,13 @@ class RecordingFileManager(private val filesDir: File) {
 
     fun createRecordingFile(contactId: String, timestamp: Long): File {
         val sanitizedId = contactId.replace(Regex("[^a-zA-Z0-9_-]"), "_")
-        val file = File(recordingsDir, "call_${sanitizedId}_$timestamp.m4a")
-        file.createNewFile()
+        val fileName = "call_${sanitizedId}_$timestamp.m4a"
+        val file = File(recordingsDir, fileName)
+        if (!file.createNewFile()) {
+            throw IllegalStateException(
+                "Recording file already exists: $fileName (contactId=$contactId, timestamp=$timestamp)"
+            )
+        }
         return file
     }
 
