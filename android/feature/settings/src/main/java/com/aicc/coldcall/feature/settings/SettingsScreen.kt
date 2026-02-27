@@ -13,6 +13,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +31,8 @@ fun SettingsScreen(
     val state by viewModel.uiState.collectAsState()
     var urlInput by rememberSaveable { mutableStateOf(state.backendUrl) }
     var tokenInput by rememberSaveable { mutableStateOf("") }
+
+    LaunchedEffect(state.backendUrl) { urlInput = state.backendUrl }
 
     Column(
         modifier = Modifier
