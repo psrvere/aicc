@@ -1,5 +1,6 @@
 package com.aicc.coldcall.feature.settings
 
+import android.content.SharedPreferences
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -10,16 +11,18 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
 class ServerConfigStore @Inject constructor(
     private val dataStore: DataStore<Preferences>,
+    @Named("encrypted") private val encryptedPrefs: SharedPreferences,
 ) : TokenProvider, BaseUrlProvider {
 
     private companion object {
         val BACKEND_URL_KEY = stringPreferencesKey("backend_url")
-        val AUTH_TOKEN_KEY = stringPreferencesKey("auth_token")
+        const val AUTH_TOKEN_KEY = "auth_token"
         const val DEFAULT_URL = "http://10.0.2.2:8000/"
     }
 
@@ -28,17 +31,17 @@ class ServerConfigStore @Inject constructor(
     }
 
     override suspend fun getToken(): String? =
-        dataStore.data.map { prefs -> prefs[AUTH_TOKEN_KEY] }.first()
+        encryptedPrefs.getString(AUTH_TOKEN_KEY, null)
 
     suspend fun saveBackendUrl(url: String) {
         dataStore.edit { prefs -> prefs[BACKEND_URL_KEY] = url }
     }
 
     suspend fun saveToken(token: String) {
-        dataStore.edit { prefs -> prefs[AUTH_TOKEN_KEY] = token }
+        encryptedPrefs.edit().putString(AUTH_TOKEN_KEY, token).apply()
     }
 
     suspend fun clearToken() {
-        dataStore.edit { prefs -> prefs.remove(AUTH_TOKEN_KEY) }
+        encryptedPrefs.edit().remove(AUTH_TOKEN_KEY).apply()
     }
 }

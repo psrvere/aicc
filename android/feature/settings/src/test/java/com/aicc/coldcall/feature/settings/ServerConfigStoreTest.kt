@@ -1,6 +1,10 @@
 package com.aicc.coldcall.feature.settings
 
+import android.content.SharedPreferences
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import io.mockk.every
+import io.mockk.mockk
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.test.TestScope
@@ -22,14 +26,31 @@ class ServerConfigStoreTest {
     private val testDispatcher = UnconfinedTestDispatcher()
     private val testScope = TestScope(testDispatcher + Job())
     private lateinit var store: ServerConfigStore
+    private lateinit var encryptedPrefs: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
 
     @Before
     fun setUp() {
+        val tokenStore = mutableMapOf<String, String>()
+        editor = mockk(relaxed = true) {
+            every { putString(any(), any()) } answers {
+                tokenStore[firstArg()] = secondArg()
+                this@mockk
+            }
+            every { remove(any()) } answers {
+                tokenStore.remove(firstArg<String>())
+                this@mockk
+            }
+        }
+        encryptedPrefs = mockk {
+            every { getString(any(), any()) } answers { tokenStore[firstArg()] }
+            every { edit() } returns editor
+        }
         val dataStore = PreferenceDataStoreFactory.create(
             scope = testScope,
             produceFile = { tmpFolder.newFile("test_settings.preferences_pb") }
         )
-        store = ServerConfigStore(dataStore)
+        store = ServerConfigStore(dataStore, encryptedPrefs)
     }
 
     @Test
