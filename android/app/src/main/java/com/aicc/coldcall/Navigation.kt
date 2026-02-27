@@ -31,10 +31,9 @@ fun AppNavHost(
         modifier = modifier,
     ) {
         callPlanScreen(
-            onContactClick = { id, name, phone ->
+            onContactClick = { id, name ->
                 val encodedName = Uri.encode(name)
-                val encodedPhone = Uri.encode(phone)
-                navController.navigate("precall/$id/$encodedName/$encodedPhone")
+                navController.navigate("precall/$id/$encodedName")
             },
         )
 
