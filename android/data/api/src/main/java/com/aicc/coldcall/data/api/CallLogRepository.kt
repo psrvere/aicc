@@ -6,6 +6,7 @@ import com.aicc.coldcall.core.model.CallLog
 import com.aicc.coldcall.core.network.AiccApiService
 import com.aicc.coldcall.core.network.dto.CallLogCreateDto
 import com.aicc.coldcall.core.network.dto.toDomain
+import android.util.Log
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -16,7 +17,15 @@ class CallLogRepository @Inject constructor(
 ) {
     suspend fun logCall(dto: CallLogCreateDto): CallLog {
         val callLog = api.logCall(dto).toDomain()
-        callLogDao.insert(callLog.toEntity())
+        try {
+            callLogDao.insert(callLog.toEntity())
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to cache call log locally", e)
+        }
         return callLog
+    }
+
+    companion object {
+        private const val TAG = "CallLogRepository"
     }
 }
