@@ -19,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -62,6 +63,13 @@ class CallRecordingService : Service() {
 
         serviceScope.launch {
             recorderMutex.withLock {
+                mediaRecorder?.let { existing ->
+                    Log.w(TAG, "Releasing previous MediaRecorder before starting new recording")
+                    try { existing.stop() } catch (_: Exception) {}
+                    try { existing.release() } catch (_: Exception) {}
+                    mediaRecorder = null
+                }
+
                 var filePath: String? = null
                 var recordingId: Long? = null
                 try {
@@ -144,8 +152,12 @@ class CallRecordingService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaRecorder?.release()
-        mediaRecorder = null
+        runBlocking {
+            recorderMutex.withLock {
+                mediaRecorder?.release()
+                mediaRecorder = null
+            }
+        }
         serviceScope.cancel()
     }
 
