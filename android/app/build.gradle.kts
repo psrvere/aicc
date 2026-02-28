@@ -11,6 +11,9 @@ import java.util.Properties
 val localProps = Properties()
 rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { localProps.load(it) }
 
+val baseUrl = localProps.getProperty("AICC_BASE_URL", "").trim().ifEmpty { "http://10.0.2.2:8000/" }
+val apiKey = localProps.getProperty("AICC_API_KEY", "").trim()
+
 android {
     namespace = "com.aicc.coldcall"
     compileSdk = 35
@@ -22,14 +25,8 @@ android {
         versionCode = 1
         versionName = "0.1.0"
 
-        buildConfigField(
-            "String", "BASE_URL",
-            "\"${localProps.getProperty("AICC_BASE_URL", "http://10.0.2.2:8000/")}\""
-        )
-        buildConfigField(
-            "String", "API_KEY",
-            "\"${localProps.getProperty("AICC_API_KEY", "")}\""
-        )
+        buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+        buildConfigField("String", "API_KEY", "\"$apiKey\"")
     }
 
     buildTypes {
